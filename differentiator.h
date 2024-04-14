@@ -5,7 +5,7 @@
 
 static const size_t MAX_SIZE_OF_VAR = 5;
 
-enum operation 
+enum operations 
 {
     NOT_OPERATION = 0,
     ADD           = 1,
@@ -19,7 +19,7 @@ enum operation
     POW           = 9
 };
 
-enum type
+enum types
 {
     type_uninit    = 0, // неинициализованный тип
     type_num       = 1, // число
@@ -29,8 +29,8 @@ enum type
 
 struct Node
 { 
-    type type;                 // тип хранимой информации
-    operation operation;       // тип операции
+    types type;                 // тип хранимой информации
+    operations operation;       // тип операции
     double value;              // значение const 
     char var[MAX_SIZE_OF_VAR]; // имя переменной
     size_t arg_number;         // сколько аргументов, если это функция (т.е. 1 или 2) 
@@ -56,7 +56,7 @@ struct Differentiator
 void differentiator_ctr(Differentiator* differentiator, size_t file_size);
 void differentiator_dtr(Differentiator* differentiator);
 void tree_dtor(Node* ptr_node);
-Node* create_op_node(operation operation, Node* left, Node* right, size_t arg_number);
+Node* create_op_node(operations operation, Node* left, Node* right, size_t arg_number);
 Node* create_num_node(double value, Node* left, Node* right);
 Node* create_var_node(char* variable, Node* left, Node* right);
 Node* copy_node(Node* ptr_node);

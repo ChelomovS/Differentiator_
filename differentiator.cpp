@@ -45,7 +45,7 @@ void tree_dtor(Node* ptr_node)
 }
 
 // creating different nodes
-Node* create_op_node(operation operation, Node* left, Node* right, size_t arg_number)
+Node* create_op_node(operations operation, Node* left, Node* right, size_t arg_number)
 {
     ASSERT(left   != nullptr);
 

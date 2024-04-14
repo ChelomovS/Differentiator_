@@ -1,0 +1,27 @@
+digraph G{
+	Node_0 [label = "+", shape = "box", style = "filled", fillcolor = "#1f77b4"]
+	Node_0 -> Node_1
+	Node_1 [label = "*", shape = "box", style = "filled", fillcolor = "#1f77b4"]
+	Node_1 -> Node_2
+	Node_2 [label = "0.000000", shape = "box", style = "filled", fillcolor = "#1f77b4"]
+	Node_1 -> Node_3
+	Node_3 [label = "cos", shape = "box", style = "filled", fillcolor = "#1f77b4"]
+	Node_3 -> Node_4
+	Node_4 [label = "x", shape = "box", style = "filled", fillcolor = "#1f77b4"]
+	Node_0 -> Node_5
+	Node_5 [label = "*", shape = "box", style = "filled", fillcolor = "#1f77b4"]
+	Node_5 -> Node_6
+	Node_6 [label = "1.000000", shape = "box", style = "filled", fillcolor = "#1f77b4"]
+	Node_5 -> Node_7
+	Node_7 [label = "*", shape = "box", style = "filled", fillcolor = "#1f77b4"]
+	Node_7 -> Node_8
+	Node_8 [label = "-1.000000", shape = "box", style = "filled", fillcolor = "#1f77b4"]
+	Node_7 -> Node_9
+	Node_9 [label = "*", shape = "box", style = "filled", fillcolor = "#1f77b4"]
+	Node_9 -> Node_10
+	Node_10 [label = "1.000000", shape = "box", style = "filled", fillcolor = "#1f77b4"]
+	Node_9 -> Node_11
+	Node_11 [label = "sin", shape = "box", style = "filled", fillcolor = "#1f77b4"]
+	Node_11 -> Node_12
+	Node_12 [label = "x", shape = "box", style = "filled", fillcolor = "#1f77b4"]
+}
