@@ -55,24 +55,26 @@ struct Differentiator
 
 void differentiator_ctr(Differentiator* differentiator, size_t file_size);
 void differentiator_dtr(Differentiator* differentiator);
-void tree_dtor(Node* ptr_node);
+void load_data(const char* file_name, Differentiator* differentiator);
+
 Node* create_op_node(operations operation, Node* left, Node* right, size_t arg_number);
 Node* create_num_node(double value, Node* left, Node* right);
-Node* create_var_node(char* variable, Node* left, Node* right);
+Node* create_var_node(const char* variable, Node* left, Node* right);
 Node* copy_node(Node* ptr_node);
 void  delete_tree(Node* node);
+
 Node* diff(Node* ptr_node);
 Node* differentiate(Node* ptr_node);
 
 Node* recursive_descent(const char* buffer);
-Node* get_G();
-Node* get_E();
-Node* get_T();
-Node* get_P();
-Node* get_O();
-Node* get_F();
-Node* get_N();
-void tree_dump(Node* ptr_node, FILE* file);
+Node* get_expression();
+Node* get_add();
+Node* get_mul();
+Node* get_brackets();
+Node* get_func();
+Node* get_pow();
+Node* get_number();
+
 void syntax_error();
 
 #endif // DIFFERENTIATOR_H

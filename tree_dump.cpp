@@ -74,15 +74,19 @@ void tree_dump_dot(FILE* dump_file, Node* node, int* node_counter)
 void make_png_dump(Node* node)
 {
     FILE* graph_file = fopen("graphiz/graph.dot", "w");
+    
     fprintf(graph_file, "digraph G{\n");
     int node_counter = 0;
     tree_dump_dot(graph_file, node, &node_counter);
     fprintf(graph_file, "}");
+
 	fclose(graph_file);
 
     char call_graph[100] = " ";
     snprintf(call_graph, 50, "dot graphiz/graph.dot -Tpng -o graphiz/graph%d.png", number_png);
+
     number_png++;
+
     system(call_graph);
 }
 

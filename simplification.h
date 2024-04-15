@@ -11,9 +11,5 @@ Node* simplificate_add(Node* node, bool* change_flag);
 Node* simplificate_sub(Node* node, bool* change_flag);
 Node* simplificate_mul(Node* node, bool* change_flag);
 Node* simplificate_div(Node* node, bool* change_flag);
-//Node* simplificate_sin(Node* node, bool* change_flag);
-//Node* simplificate_cos(Node* node, bool* change_flag);
-//Node* simplificate_ln (Node* node, bool* change_flag);
-//Node* simplificate_pow(Node* node, bool* change_flag);
 
 #endif // SIMPLIFICATION_H

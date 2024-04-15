@@ -31,4 +31,70 @@
 #define _LN (left)          create_op_node(LN,  left, nullptr, 1)
 #define _POW(left, right)   create_op_node(POW, left, right,   2)
 
+#define SIMPLE_FUNC(ptr_node, function)\
+                ptr_node->type = type_num;\
+                ptr_node->operation = NOT_OPERATION;\
+                ptr_node->value = function(ptr_node->left->value);\
+                ptr_node->arg_number = 0;\
+                delete_tree(ptr_node->left);\
+                ptr_node->left = nullptr;
+
+#define SIMPLE_ADD(ptr_node)\
+                ptr_node->type = type_num;\
+                ptr_node->operation = NOT_OPERATION;\
+                ptr_node->value = ptr_node->left->value + ptr_node->right->value;\
+                ptr_node->arg_number = 0;\
+                delete_tree(ptr_node->left);\
+                ptr_node->left = nullptr;\
+                delete_tree(node->right);\
+                ptr_node->right = nullptr;
+
+#define SIMPLE_SUB(ptr_node)\
+                ptr_node->type = type_num;\
+                ptr_node->operation = NOT_OPERATION;\
+                ptr_node->value = ptr_node->left->value - ptr_node->right->value;\
+                ptr_node->arg_number = 0;\
+                delete_tree(ptr_node->left);\
+                ptr_node->left = nullptr;\
+                delete_tree(ptr_node->right);\
+                ptr_node->right = nullptr;
+
+#define SIMPLE_MUL(ptr_node)\
+                ptr_node->type = type_num;\
+                ptr_node->operation = NOT_OPERATION;\
+                ptr_node->value = ptr_node->left->value * ptr_node->right->value;\
+                ptr_node->arg_number = 0;\
+                delete_tree(ptr_node->left);\
+                ptr_node->left = nullptr;\
+                delete_tree(ptr_node->right);\
+                ptr_node->right = nullptr;
+                
+// func 
+
+#define SIMPLE_DIV(ptr_node)\
+                ptr_node->type = type_num;\
+                ptr_node->operation = NOT_OPERATION;\
+                ptr_node->value = ptr_node->left->value / ptr_node->right->value;\
+                ptr_node->arg_number = 0;\
+                delete_tree(ptr_node->left);\
+                ptr_node->left = nullptr;\
+                delete_tree(ptr_node->right);\
+                ptr_node->right = nullptr;
+
+#define MAKE_ZERO_VALUE(ptr_node)\
+                ptr_node->type = type_num;\
+                ptr_node->operation = NOT_OPERATION;\
+                ptr_node->value = 0;\
+                ptr_node->arg_number = 0;\
+                delete_tree(ptr_node->left);\
+                delete_tree(ptr_node->right);\
+                ptr_node->left = nullptr;\
+                ptr_node->right = nullptr;
+
+#define CHANGE_NODES(ptr_node, ptr_node_for_delete, new_ptr_node)\
+                delete_tree(ptr_node_for_delete);\
+                Node* ptr_node_holder = ptr_node;\
+                ptr_node = new_ptr_node;\
+                free(ptr_node_holder);
+
 #endif // DSL_H

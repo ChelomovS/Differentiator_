@@ -5,6 +5,7 @@
 #include "differentiator.h"
 #include "simplification.h"
 #include "tree_dump.h"
+#include "fileLib.h"
 #include "dsl.h"
 
 const char* str = nullptr;
@@ -27,21 +28,21 @@ void differentiator_dtr(Differentiator* differentiator)
     free(differentiator->buffer);
     differentiator->buffer = nullptr;
 
-    tree_dtor(differentiator->ptr_node);
+    delete_tree(differentiator->ptr_node);
     differentiator->ptr_node = nullptr;
 }
 
-void tree_dtor(Node* ptr_node)
+void load_data(const char* file_name, Differentiator* differentiator)
 {
-    ASSERT(ptr_node != nullptr);
+    FILE* filein = fopen(file_name, "r");
+    ASSERT(filein != nullptr);
 
-    if (ptr_node->left != nullptr)
-        tree_dtor(ptr_node->left);
+    size_t file_size = GetFileSize(filein);
 
-    if (ptr_node->right != nullptr)
-        tree_dtor(ptr_node->right);
-
-    free(ptr_node);
+    differentiator_ctr(differentiator, file_size);
+    fread(differentiator->buffer, sizeof(char), file_size, filein);
+    
+    fclose(filein);
 }
 
 // creating different nodes
@@ -79,7 +80,7 @@ Node* create_num_node(double value, Node* left, Node* right)
     return num_node;
 }
 
-Node* create_var_node(char* variable, Node* left, Node* right)
+Node* create_var_node(const char* variable, Node* left, Node* right)
 {
     ASSERT(variable != nullptr);
 
@@ -242,28 +243,28 @@ Node* recursive_descent(const char* buffer) // written
 
     str = buffer;
 
-    return get_G();
+    return get_expression();
 }
 
-Node* get_G() // written
+Node* get_expression() // written
 {
-    Node* node = get_E();
+    Node* node = get_add();
 
     REQUIRE('$', str);
 
     return node;
 }
 
-Node* get_E() // written
+Node* get_add() // written
 {
-    Node* node = get_T();
+    Node* node = get_mul();
 
     while (*str == '+' || *str == '-')
     {
         char op = *str;
         str++;
 
-        Node* right_node = get_T();
+        Node* right_node = get_mul();
 
         if (op == '+')
         {
@@ -278,16 +279,16 @@ Node* get_E() // written
     return node;
 }
 
-Node* get_T() // written
+Node* get_mul() // written
 {
-    Node* node = get_O();
+    Node* node = get_func();
 
     while(*str == '*' || *str == '/')
     {
         char op = *str;
         str++;
 
-        Node* right_node = get_O();
+        Node* right_node = get_func();
 
         if (op == '*')  
         {
@@ -301,78 +302,77 @@ Node* get_T() // written
     return node;
 }
 
-Node* get_O() // written
+Node* get_func() //FIXME - массив структур
 {
     if (strncmp(str, "sin", 3) == 0)
     {
         str += 3;
 
-        return create_op_node(SIN, get_P(), nullptr, 1);
+        return create_op_node(SIN, get_brackets(), nullptr, 1);
     }
 
     if (strncmp(str, "ln", 2) == 0)
     {
         str += 2;
 
-        return create_op_node(LN, get_P(), nullptr, 1);
+        return create_op_node(LN, get_brackets(), nullptr, 1);
     }
 
     if (strncmp(str, "cos", 3) == 0)
     {
         str += 3;
 
-        return create_op_node(COS, get_P(), nullptr, 1);
+        return create_op_node(COS, get_brackets(), nullptr, 1);
     }
 
     if (strncmp(str, "tg", 2) == 0)
     {
         str += 2;
 
-        return create_op_node(TAN, get_P(), nullptr, 1);
+        return create_op_node(TAN, get_brackets(), nullptr, 1);
     }
 
-    return get_F();
+    return get_pow();
 }
 
-Node* get_F() // written
+Node* get_pow() // written
 {
-    Node* node = get_P();
+    Node* node = get_brackets();
 
     while(*str == '^')
     {
         str++;
 
-        Node* right_node = get_P();
+        Node* right_node = get_brackets();
         node = create_op_node(POW, node, right_node, 2);
     }
 
     return node;
 }
 
-Node* get_P() // written
+Node* get_brackets() // written
 {
     if (*str == '(')
     {
         str++;
 
-        Node* node = get_E();
+        Node* node = get_add();
         REQUIRE(')', str);
 
         return node;
     }
 
-    return get_N();
+    return get_number();
 }
 
-Node* get_N() // written
+Node* get_number() // written
 {
-
     if (*str == 'x')
     {
         str++;
         return create_var_node("x", nullptr, nullptr);
     }
-
+    
     double val = 0;
 
     const char* old_str = str;
@@ -389,68 +389,6 @@ Node* get_N() // written
     }
     
     return create_num_node(val, nullptr, nullptr);
-}
-
-void tree_dump(Node* ptr_node, FILE* file)
-{
-    ASSERT(ptr_node != nullptr);
-    ASSERT(file != nullptr);
-
-    if (ptr_node == nullptr)
-    {
-        return;
-    }
-    
-    fprintf(file, "Указатель на данный узел: %p  \n", ptr_node);
-    
-    if (ptr_node->type == type_operation)
-        switch(ptr_node->operation)
-        {
-        case(ADD):  
-            fprintf(file, "Это сложение \n"); 
-            break;
-        case(SUB):
-            fprintf(file, "Это вычитание \n");
-            break;
-        case(MUL):
-            fprintf(file, "Это умножение \n");
-            break;
-        case(DIV):
-            fprintf(file, "Это деление \n");
-            break;
-        case(SIN):
-            fprintf(file, "Это синус \n");
-            break;
-        case(COS):
-            fprintf(file, "Это косинус \n");
-            break;
-        case(LN):
-            fprintf(file, "Это натуральный логарифм \n");
-            break;
-        case(TAN):
-            fprintf(file, "Это тангенс \n");
-            break;
-        case(POW):
-            fprintf(file, "Это степень \n");
-            break;
-        case(NOT_OPERATION):
-            fprintf(file, "Ошибка \n");
-            ASSERT(0 && ":(");
-        }
-
-    if (ptr_node->type == type_num)
-        fprintf(file, "Значение константы:       %lf \n", ptr_node->value);
-    if (ptr_node->type == type_var)
-        fprintf(file, "Переменная:               %s  \n", ptr_node->var);
-
-    fprintf(file, "Количество аргументов:    %zu \n",     ptr_node->arg_number);
-    fprintf(file, "Левый подузел:            %p  \n",     ptr_node->left);
-    fprintf(file, "Правый подузел:           %p  \n\n\n", ptr_node->right);
-
-    if (ptr_node->left != nullptr)
-        tree_dump(ptr_node->left, file);
-    if (ptr_node->right != nullptr)
-        tree_dump(ptr_node->right, file);
 }
 
 void syntax_error()

@@ -10,15 +10,9 @@ int main(const int argc, const char** argv)
         fprintf(stderr, "TOO FEW FILES \n");
         return 0;
     }
-
-    FILE* filein = fopen(argv[1], "r");
-    size_t file_size = GetFileSize(filein);
- 
+    
     Differentiator differentiator = {};
-    differentiator_ctr(&differentiator, file_size + 1);
-    fprintf(stderr, "%zu", file_size);
-    fread(differentiator.buffer, sizeof(char), file_size + 1, filein);
-    fclose(filein);
+    load_data(argv[1], &differentiator);
     differentiator.ptr_node = recursive_descent(differentiator.buffer);
     make_png_dump(differentiator.ptr_node);
     differentiator.ptr_node = differentiate(differentiator.ptr_node);
